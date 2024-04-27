@@ -20,10 +20,13 @@ latitude = 55.751244  # shirota, 2nd in request
 longitude = 37.618423  # dolgota, 1st in request 180+ => *-1
 
 base_move_step = 0.3
+sp = ['sat', 'map', 'sat,skl']
+id = 1
+curr_sp = sp[id]
 
 
-def crop_picture(long, lat, spn, type='map'):
-    map_request = f"http://static-maps.yandex.ru/1.x/?ll={long},{lat}&spn={spn},{spn}&l={type}"
+def crop_picture(long, lat, spn, curr_sp):
+    map_request = f"http://static-maps.yandex.ru/1.x/?ll={long},{lat}&spn={spn},{spn}&l={curr_sp}"
     responce = requests.get(map_request)
     bytes = responce.content
 
@@ -33,7 +36,7 @@ def crop_picture(long, lat, spn, type='map'):
 
 while running:
 
-    crop_picture(longitude, latitude, spn)
+    crop_picture(longitude, latitude, spn, curr_sp)
     screen.blit(pygame.image.load("map_file"), (0, 0))
 
     pygame.display.flip()
@@ -78,4 +81,8 @@ while running:
             elif event.key == pygame.K_PAGEDOWN:
                 if spn < spn_max:
                     spn = round(spn * spn_step, 3)
+
+            elif event.key == pygame.K_SPACE:
+                id = (id + 1) % 3
+                curr_sp = sp[id]
 pygame.quit()
